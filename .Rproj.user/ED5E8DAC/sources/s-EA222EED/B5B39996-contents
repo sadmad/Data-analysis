@@ -1,0 +1,3 @@
+library(ggplot2)
+df <- movies <- movies[sample(nrow(movies), 1000), ]
+qplot(rating,data=df,geom='histogram',binwidth=0.1,alpha=0.8)
