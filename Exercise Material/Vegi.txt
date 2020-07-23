@@ -1,0 +1,6 @@
+"Name" "Vegi"
+"Andrea" "yes"
+"Eike" "no"
+"Julia" "yes"
+"Linda" "no"
+"Tobi" "no"

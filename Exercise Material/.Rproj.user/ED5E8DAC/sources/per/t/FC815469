@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1595417872353.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "910186594",
+    "id" : "FC815469",
+    "lastKnownWriteTime" : 1595469032,
+    "last_content_update" : 1595469032232,
+    "path" : "~/Desktop/uni/S20/data_analisis/Exercise Material/test.R",
+    "project_path" : "test.R",
+    "properties" : {
+        "cursorPosition" : "92,15",
+        "scrollLine" : "26",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
