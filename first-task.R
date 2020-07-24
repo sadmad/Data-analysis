@@ -4,8 +4,8 @@ data(ohorizon)
 ba <- ohorizon$Ba
 n <- length(ba)
 par(mfcol=c(2,2),mar=c(4,4,2,2))
-edaplotlog(ba,H.freq=F,box=T,H.breaks=30,S.pch=3,S.cex=0.5,D.lwd=1.5,P.log=F,
-           P.main="",P.xlab="Ba [mg/kg]",P.ylab="Density",B.pch=3,B.cex=0.5,B.log=TRUE)
+edaplotlog(ba, H.freq=F,box=T,H.breaks=30,S.pch=3,S.cex=0.5,D.lwd=1.5,P.log=F,
+           P.main="",P.xlab="Ba [mg/kg]",P.ylab="Density",B.pch=3,B.cex=0.5,B.log=TRUE, map.col = 'rainbow')
 edaplot(log10(ba),H.freq=F,box=T,S.pch=3,S.cex=0.5,D.lwd=1.5,P.ylab="Density",
         P.log=T,P.logfine=c(5,10),P.main="",P.xlab="Ba [mg/kg]",B.pch=3,B.cex=0.5)
 plot(sort(ba),((1:n)-0.5)/n,pch=3,cex=0.8,

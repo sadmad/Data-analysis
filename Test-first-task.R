@@ -1,6 +1,7 @@
 library(StatDA)
 library(ggplot2)
 library(PerformanceAnalytics)
+df <- ohorizon
 data(ohorizon)
 #add the data to variable
 summary(df)
@@ -14,7 +15,6 @@ cor(df.elem)
 #the data is too larg to make a pairs plot with it
 pairs(df[10:14])
 #we must search a way to find correlation between elemnt and the categoritical data
-chart.Correlation(df)
 chart.Correlation(df.elem)
 #pie chart of ni in all three countries
 #install.packages('plotrix')
@@ -25,18 +25,32 @@ ni.fin <- subset(df$Ni, df$COUN == 'FIN' )
 ni.rus.sum <- sum(ni.rus)
 ni.nor.sum <- sum(ni.nor)
 ni.fin.sum <- sum(ni.fin)
-ni.all <- data.frame( name= c("RUS", "FIN", "NOR"),Ni = c(ni.rus.sum, ni.fin.sum, ni.nor.sum), )
+ni.all <- data.frame( name= c("RUS", "FIN", "NOR"),Ni = c(ni.rus.sum, ni.fin.sum, ni.nor.sum) )
 pie(ni.all$Ni,ni.all$name)
 #3d pie chart
 pie3D(ni.all$Ni, labels = ni.all$name,explide = 0.1, main = "Pie Chart of Ni in Countries ")
 #3d scaterplot
-install.packages("scatterplot3d")
+#install.packages("scatterplot3d")
 library(scatterplot3d)
 colors <- c("#999999", "#E69F00")
+
+ggpairs(df.coun.el)
+
+#### multivariant scaterplot ########
+
+#install.packages("GGally")
+library(GGally)
+library(ggplot2)
+#make a dataframe with country and our consideration of important elements
+df.coun.el<-data.frame("COUN" = df$COUN, "Ni"= df$Ni, "Cu"= df$Cu, "Cd"= df$Cd,
+                       "As"= df$As, "Zn"= df$Zn, "Pb"= df$Pb, "Hg"= df$Hg)
+ggpairs(df.coun.el)
+
+
 #the title of lab must be changed
 #install.packages('shapes')
 library(shapes)
-shape = c(16, 17)
+shapes = c(16, 17)
 shapes <- shapes[as.numeric(df$Ni)]
 colors <- c("#999999", "#E69F00")
 colors <- colors[as.numeric(log10(df$Cu))]
@@ -60,7 +74,7 @@ shapes <- shapes[as.numeric(iris$Species)]
 shapes
 scatterplot3d(iris[,1:3], pch = shapes)
 ###############
-hist(ohorizon$Ni)
+hist(df$Ni)
 hist(log10(ohorizon$Ni))
 head(df)
 qplot(Cu,data=df,geom='histogram',binwidth=0.1,alpha=0.8)
