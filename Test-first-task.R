@@ -7,23 +7,37 @@ df <- ohorizon
 #add the data to variable
 summary(df)
 head(df)
+
+##### (a) ##### 
 #split the df to the important elements
 df.elem <-data.frame("Ni"=df$Ni, "Cu"=df$Cu, "Cd"=df$Cd, "As"=df$As, "Zn"=df$Zn, "Pb"=df$Pb, "Hg"=df$Hg)
 #make plot of the important element
 plot(df.elem)
-cor(df.elem)
-plot(log10(df$Zn), log10(df$Cu), pch = 19)
-fm <- lm(log10(df$Zn) ~ log10(df$Cu))
-abline(fm, col = "red")
 
+#first method of showing correlation
+df.cor <- cor(df.elem)
+ggcorr(df.cor)
+#secont method of visualizing correlation
+#install.packages("PerformanceAnalytics")
+library(PerformanceAnalytics)
+chart.Correlation(df.elem)
+# plot of Zn and CU
+plot(log10(df$Zn), log10(df$Cu), pch = 19)
+abline(lm(log10(df$Zn) ~ log10(df$Cu)), col = "red")
+
+#plot of Zn vs Cd without transformation
+plot(df$Zn, df$Cd, pch = 19)
+abline(lm(df$Zn ~ df$Cd))
+
+#plot of Zn vs Cd woth transformation
 plot(log10(df$Zn), log10(df$Cd), pch = 19)
-fm <- lm(log10(df$Zn) ~ log10(df$Cd))
-abline(fm, col = "red")
+abline(log10(df$Zn) ~ log10(df$Cd), col = "red")
+
 # corolation of all data
 #the data is too larg to make a pairs plot with it
 pairs(df[10:14])
 #we must search a way to find correlation between elemnt and the categoritical data
-chart.Correlation(df.elem)
+
 #pie chart of ni in all three countries
 #install.packages('plotrix')
 library(plotrix)
@@ -39,10 +53,10 @@ pie(ni.all$Ni,ni.all$name)
 pie3D(ni.all$Ni, labels = ni.all$name,explide = 0.1, main = "Pie Chart of Ni in Countries ")
 #3d scaterplot
 #install.packages("scatterplot3d")
+#install.packages('GGally')
 library(scatterplot3d)
 colors <- c("#999999", "#E69F00")
 
-ggpairs(df.coun.el)
 
 #### multivariant scaterplot ########
 
@@ -55,17 +69,27 @@ df.coun.el<-data.frame("COUN" = df$COUN, "Ni"= df$Ni, "Cu"= df$Cu, "Cd"= df$Cd,
 ggpairs(df.coun.el)
 abline(df.coun.el, col = "red")
 
+####TEST-scotter3d####
+#install.packages("scatterplot3d")
+library(scatterplot3d)
+shapes = c(16, 17, 18) 
+shapes <- shapes[as.numeric(df.coun.el$COUN)]
+par(mfrow=c(1,1))
+scatterplot3d(df.coun.el$Ni, df.coun.el$Cu, pch = shapes)
 #the title of lab must be changed
 #install.packages('shapes')
 library(shapes)
-shapes = c(16, 17)
-shapes <- shapes[as.numeric(df$Ni)]
-colors <- c("#999999", "#E69F00")
-colors <- colors[as.numeric(log10(df$Cu))]
-scatterplot3d(log10(df$Ni),log10(df$Cu), angle = 60,main="3D Scatter Plot",
+shapes = c(16, 17, 18)
+shapes <- shapes[as.numeric(df$COUN)]
+colors <- c("#999999", "#E69F00", '#E500aa')
+colors <- colors[as.numeric(df$COUN)]
+length(colors)
+length(shapes)
+length(df$COUN)
+scatterplot3d(df[1:4], angle = 60,main="3D Scatter Plot",
               xlab = "Sepal Length (cm)",
               ylab = "Sepal Width (cm)",
-              zlab = "Petal Length (cm)", color = colors )
+              zlab = "Petal Length (cm)", color = colors, pch = shapes )
 #####
 boxplot(df$Ni ~ df$COUN)
 boxplot(log10(df$Ni) ~ df$COUN)
@@ -110,14 +134,7 @@ library(spatialrisk)
 df <- data.frame(location = c("p1", "p2"), lon = c(6.561561, 6.561398), lat = c(53.21369, 53.21326))
 concentration(df, Groningen, value = amount, radius = 100)
 
-####TEST-scotter3d####
-#install.packages("scatterplot3d")
-library(scatterplot3d)
-shapes = c(16, 17, 18) 
-shapes <- shapes[as.numeric(df.coun.el$COUN)]
-shapes
-par(mfrow=c(1,1))
-scatterplot3d(df.coun.el$Ni, df.coun.el$Cu, pch = shapes)
+
 
 
 ##(3) regrassion###
@@ -164,12 +181,11 @@ plot(ecdf(ohorizon$Ni))
 plot(ohorizon$Ni,ohorizon$Cu)
 plot(log10(ohorizon$Ni),log10(ohorizon$Cu))
 pairs(ohorizon[36:40])
-library(PerformanceAnalytics)
-install.packages("PerformanceAnalytics")
-library("PerformanceAnalytics")
+
+#install.packages("PerformanceAnalytics")
+#library(PerformanceAnalytics)
 chart.Correlation(ohorizon[25:40])
 split.ohorizon <-data.frame("Ni"=ohorizon$Ni, "Cu"=ohorizon$Cu, "Cd"=ohorizon$Cd, "As"=ohorizon$As, "Zn"=ohorizon$Zn, "Pb"=ohorizon$Pb, "Hg"=ohorizon$Hg)
-library("PerformanceAnalytics")
 chart.Correlation(split.ohorizon)
 split.ohorizon1 <-data.frame("COUN"= ohorizon$COUN,"VEG_ZONE"=ohorizon$VEG_ZONE, "LITO"=ohorizon$LITO,"GROUNDVEG"=ohorizon$GROUNDVEG, "Ni"=ohorizon$Ni, "Cu"=ohorizon$Cu, "Cd"=ohorizon$Cd, "As"=ohorizon$As, "Zn"=ohorizon$Zn, "Pb"=ohorizon$Pb, "Hg"=ohorizon$Hg)
 mean(ohorizon$Ni)

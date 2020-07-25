@@ -1,0 +1,5 @@
+par(mfrow=c(1,1))
+plot(mtcars$mpg,mtcars$wt)
+abline(lm(wt ~ mpg, mtcars))
+plot(mtcars$disp,mtcars$wt)
+abline(lm(wt ~ disp, mtcars))
