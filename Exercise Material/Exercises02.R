@@ -127,7 +127,7 @@ agriculture
 rm(x)
 attach(agriculture)
 
-?attach
+
 # (b)
 
 
@@ -153,7 +153,6 @@ region <- c("north", "north", "north", "south", "south", "south",
 
 # or
 region <- rep("north",n)
-#p e i gr and f are the region that we put or assign south to
 region[rownames(agriculture)%in%c("P","E","I","GR","F")] <- "south"
 region
 

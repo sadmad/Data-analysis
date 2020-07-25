@@ -149,4 +149,3 @@ summary(vegi.csv)
 
 # save as *.csv 
 write.csv2(vegi.csv, file="Vegi2.csv")
-vegi.new <- read.csv()

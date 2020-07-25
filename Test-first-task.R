@@ -1,8 +1,9 @@
 library(StatDA)
 library(ggplot2)
 library(PerformanceAnalytics)
-df <- ohorizon
 data(ohorizon)
+df <- ohorizon
+
 #add the data to variable
 summary(df)
 head(df)
@@ -11,6 +12,13 @@ df.elem <-data.frame("Ni"=df$Ni, "Cu"=df$Cu, "Cd"=df$Cd, "As"=df$As, "Zn"=df$Zn,
 #make plot of the important element
 plot(df.elem)
 cor(df.elem)
+plot(log10(df$Zn), log10(df$Cu), pch = 19)
+fm <- lm(log10(df$Zn) ~ log10(df$Cu))
+abline(fm, col = "red")
+
+plot(log10(df$Zn), log10(df$Cd), pch = 19)
+fm <- lm(log10(df$Zn) ~ log10(df$Cd))
+abline(fm, col = "red")
 # corolation of all data
 #the data is too larg to make a pairs plot with it
 pairs(df[10:14])
@@ -45,7 +53,7 @@ library(ggplot2)
 df.coun.el<-data.frame("COUN" = df$COUN, "Ni"= df$Ni, "Cu"= df$Cu, "Cd"= df$Cd,
                        "As"= df$As, "Zn"= df$Zn, "Pb"= df$Pb, "Hg"= df$Hg)
 ggpairs(df.coun.el)
-
+abline(df.coun.el, col = "red")
 
 #the title of lab must be changed
 #install.packages('shapes')
@@ -65,14 +73,80 @@ plot(log10(df$Ni) ~ df$VEG_ZONE)
 xyplot(log10(df$Ni) ~ log10(df$Zn) | df$COUN)
 xyplot(log10(df$Ni) ~ log10(df$Cu) | df$VEG_ZONE)
 
+########average concentration#########
+# a) countries
+df.coun.el
+aggregate(df.coun.el[,2:7], list(split.ohorizon1$COUN), mean)
+
+# b) vegetation
+df.veg_zone.el <- data.frame("VEG_ZONE"=df$VEG_ZONE,
+                             "Ni"=df$Ni, "Cu"=df$Cu, 
+                             "Cd"=df$Cd, "As"=df$As,
+                             "Zn"=df$Zn,"Pb"=df$Pb, "Hg"=df$Hg)
+df.veg_zone.el
+aggregate(df.veg_zone.el[,2:7], list(split.ohorizon1$VEG_ZONE), mean)
+
+# c) lithologies
+df.lito.el <- data.frame("LITO"=df$LITO,
+                             "Ni"=df$Ni, "Cu"=df$Cu, 
+                             "Cd"=df$Cd, "As"=df$As,
+                             "Zn"=df$Zn,"Pb"=df$Pb, "Hg"=df$Hg)
+df.lito.el
+aggregate(df.lito.el[,2:7], list(df.lito.el$LITO), mean)
+
+# c) GROUNGVEG
+df.graoundveg.el <- data.frame("GROUNDVEG"=df$GROUNDVEG,
+           "Ni"=df$Ni, "Cu"=df$Cu, 
+           "Cd"=df$Cd, "As"=df$As,
+           "Zn"=df$Zn,"Pb"=df$Pb, "Hg"=df$Hg)
+df.graoundveg.el
+aggregate(df.graoundveg.el[,2:7], list(df.graoundveg.el$GROUNDVEG), mean)
+
+########---- END ---- C --#########
+
+######consentration#####TEST####
+install.packages('spatialrisk')
+library(spatialrisk)
+df <- data.frame(location = c("p1", "p2"), lon = c(6.561561, 6.561398), lat = c(53.21369, 53.21326))
+concentration(df, Groningen, value = amount, radius = 100)
 
 ####TEST-scotter3d####
-data(iris)
-tail(iris)
+#install.packages("scatterplot3d")
+library(scatterplot3d)
 shapes = c(16, 17, 18) 
-shapes <- shapes[as.numeric(iris$Species)]
+shapes <- shapes[as.numeric(df.coun.el$COUN)]
 shapes
-scatterplot3d(iris[,1:3], pch = shapes)
+par(mfrow=c(1,1))
+scatterplot3d(df.coun.el$Ni, df.coun.el$Cu, pch = shapes)
+
+
+##(3) regrassion###
+#train the data for corolation## split out all numeruc data
+library(ggplot2)
+#install.packages('ggthemes')
+library(ggthemes)
+library(dplyr)
+install.packages("corrgram")
+library(corrgram)
+install.packages("corrplot")
+library(corrplot)
+#check all the numeric cols
+num.df.cols <- sapply(df, is.numeric)
+#check the corolation of all numeric data
+num.df <- cor(df[,num.df.cols])
+library(tidyverse)
+df %>% select_if(is.numeric)->df.num
+#install.packages("corrr")
+head(df.num)
+library(corrr)
+library(ggplot2)
+x <- df.num %>% correlate() %>% focus(Bi)
+x %>% 
+  mutate(rowname = factor(rowname, levels = rowname[order(Bi)])) %>%  # Order by correlation strength
+  ggplot(aes(x = rowname, y = Bi)) +
+  geom_bar(stat = "identity") +
+  ylab("Correlation with Bi") +
+  xlab("Numeric Variables")
 ###############
 hist(df$Ni)
 hist(log10(ohorizon$Ni))
@@ -90,7 +164,7 @@ plot(ecdf(ohorizon$Ni))
 plot(ohorizon$Ni,ohorizon$Cu)
 plot(log10(ohorizon$Ni),log10(ohorizon$Cu))
 pairs(ohorizon[36:40])
-library("PerformanceAnalytics")
+library(PerformanceAnalytics)
 install.packages("PerformanceAnalytics")
 library("PerformanceAnalytics")
 chart.Correlation(ohorizon[25:40])
