@@ -16,6 +16,9 @@ plot(df.elem)
 
 #first method of showing correlation
 df.cor <- cor(df.elem)
+
+#install.packages("GGally")
+library(GGally)
 ggcorr(df.cor)
 #secont method of visualizing correlation
 #install.packages("PerformanceAnalytics")
@@ -23,15 +26,15 @@ library(PerformanceAnalytics)
 chart.Correlation(df.elem)
 # plot of Zn and CU
 plot(log10(df$Zn), log10(df$Cu), pch = 19)
-abline(lm(log10(df$Zn) ~ log10(df$Cu)), col = "red")
+abline(lm(log10(df$Cu) ~ log10(df$Zn)), col = "red")
 
 #plot of Zn vs Cd without transformation
 plot(df$Zn, df$Cd, pch = 19)
-abline(lm(df$Zn ~ df$Cd))
+abline(lm(df$Cd ~ df$Zn), col = "red")
 
 #plot of Zn vs Cd woth transformation
 plot(log10(df$Zn), log10(df$Cd), pch = 19)
-abline(log10(df$Zn) ~ log10(df$Cd), col = "red")
+abline(lm(log10(df$Cd)~ log10(df$Zn)), col = "red")
 
 # corolation of all data
 #the data is too larg to make a pairs plot with it
@@ -61,7 +64,6 @@ colors <- c("#999999", "#E69F00")
 #### multivariant scaterplot ########
 
 #install.packages("GGally")
-library(GGally)
 library(ggplot2)
 #make a dataframe with country and our consideration of important elements
 df.coun.el<-data.frame("COUN" = df$COUN, "Ni"= df$Ni, "Cu"= df$Cu, "Cd"= df$Cd,
@@ -76,6 +78,7 @@ shapes = c(16, 17, 18)
 shapes <- shapes[as.numeric(df.coun.el$COUN)]
 par(mfrow=c(1,1))
 scatterplot3d(df.coun.el$Ni, df.coun.el$Cu, pch = shapes)
+scatterplot3d(log10(df.coun.el$Ni), log10(df.coun.el$Cu), pch = shapes)
 #the title of lab must be changed
 #install.packages('shapes')
 library(shapes)
@@ -90,17 +93,24 @@ scatterplot3d(df[1:4], angle = 60,main="3D Scatter Plot",
               xlab = "Sepal Length (cm)",
               ylab = "Sepal Width (cm)",
               zlab = "Petal Length (cm)", color = colors, pch = shapes )
+
+
+
 #####
 boxplot(df$Ni ~ df$COUN)
 boxplot(log10(df$Ni) ~ df$COUN)
 plot(log10(df$Ni) ~ df$VEG_ZONE)
+#install.packages('lattice')
+library(lattice)
 xyplot(log10(df$Ni) ~ log10(df$Zn) | df$COUN)
 xyplot(log10(df$Ni) ~ log10(df$Cu) | df$VEG_ZONE)
 
 ########average concentration#########
 # a) countries
+#install.packages("PerformanceAnalytics")
+library(PerformanceAnalytics)
 df.coun.el
-aggregate(df.coun.el[,2:7], list(split.ohorizon1$COUN), mean)
+aggregate(df.coun.el[,2:7], list(df.coun.el$COUN), mean)
 
 # b) vegetation
 df.veg_zone.el <- data.frame("VEG_ZONE"=df$VEG_ZONE,
@@ -108,14 +118,28 @@ df.veg_zone.el <- data.frame("VEG_ZONE"=df$VEG_ZONE,
                              "Cd"=df$Cd, "As"=df$As,
                              "Zn"=df$Zn,"Pb"=df$Pb, "Hg"=df$Hg)
 df.veg_zone.el
-aggregate(df.veg_zone.el[,2:7], list(split.ohorizon1$VEG_ZONE), mean)
+aggregate(df.veg_zone.el[,2:7], list(df.veg_zone.el$VEG_ZONE), mean)
 
 # c) lithologies
 df.lito.el <- data.frame("LITO"=df$LITO,
                              "Ni"=df$Ni, "Cu"=df$Cu, 
                              "Cd"=df$Cd, "As"=df$As,
                              "Zn"=df$Zn,"Pb"=df$Pb, "Hg"=df$Hg)
-df.lito.el
+length(df.lito.el$LITO)
+df.lito.el <- df.lito.el[!is.na(df.lito.el$LITO), ]
+
+length(df.lito.el$LITO)
+
+
+df.lito.el$LITO[df.lito.el$LITO=="51"]<-"A"
+df.lito.el$LITO[df.lito.el$LITO=="52"]<-"B"
+df.lito.el$LITO[df.lito.el$LITO=="81"]<-"C"
+df.lito.el$LITO[df.lito.el$LITO=="82"]<-"C"
+df.lito.el$LITO[df.lito.el$LITO=="83"]<-"C"
+df.lito.el$LITO[df.lito.el$LITO == "7"]<-"D"
+
+length(df.lito.el$LITO)
+
 aggregate(df.lito.el[,2:7], list(df.lito.el$LITO), mean)
 
 # c) GROUNGVEG
