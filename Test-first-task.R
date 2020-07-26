@@ -127,20 +127,33 @@ df.lito.el <- data.frame("LITO"=df$LITO,
                              "Zn"=df$Zn,"Pb"=df$Pb, "Hg"=df$Hg)
 length(df.lito.el$LITO)
 df.lito.el <- df.lito.el[!is.na(df.lito.el$LITO), ]
-
+df.lito.el
 length(df.lito.el$LITO)
 
-
+#change the class number according to the project sheet to 4 group
 df.lito.el$LITO[df.lito.el$LITO=="51"]<-"A"
 df.lito.el$LITO[df.lito.el$LITO=="52"]<-"B"
 df.lito.el$LITO[df.lito.el$LITO=="81"]<-"C"
 df.lito.el$LITO[df.lito.el$LITO=="82"]<-"C"
 df.lito.el$LITO[df.lito.el$LITO=="83"]<-"C"
 df.lito.el$LITO[df.lito.el$LITO == "7"]<-"D"
+is.numeric(df.lito.el[1, 1])
+df.lito.len <- length(df.lito.el$LITO)
+df.lito.len
+#split out the other LITOS if they are numeric
+df.lito.4groups<-df.lito.el[(df.lito.el$LITO == "A" | df.lito.el$LITO == "B" | df.lito.el$LITO == "C" | df.lito.el$LITO == "D"),]
+df.lito.4groups
 
-length(df.lito.el$LITO)
-
-aggregate(df.lito.el[,2:7], list(df.lito.el$LITO), mean)
+#i <- 1
+#for (i in 1:df.lito.len ){
+  #if (df.lito.el[i, 1] != "A" & df.lito.el[i, 1] != "B" & df.lito.el[i, 1] != "C" & df.lito.el[i, 1] != "D"){
+    #df.lito.el <- df.lito.el[-i, ]
+  #}
+  #i = i + 1
+#}
+#print(df.lito.el)
+#df.lito.el
+aggregate(df.lito.4groups[,2:7], list(df.lito.4groups$LITO), mean)
 
 # c) GROUNGVEG
 df.graoundveg.el <- data.frame("GROUNDVEG"=df$GROUNDVEG,
