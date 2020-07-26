@@ -5,9 +5,9 @@ library(ggplot2)
 #install.packages('ggthemes')
 library(ggthemes)
 library(dplyr)
-install.packages("corrgram")
+#install.packages("corrgram")
 library(corrgram)
-install.packages("corrplot")
+#install.packages("corrplot")
 library(corrplot)
 #check all the numeric cols
 num.df.cols <- sapply(df, is.numeric)
@@ -26,6 +26,9 @@ x %>%
   geom_bar(stat = "identity") +
   ylab("Correlation with Bi") +
   xlab("Numeric Variables")
+
+
+
 ###############
 hist(df$Ni)
 hist(log10(ohorizon$Ni))
