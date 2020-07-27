@@ -24,9 +24,18 @@ ggcorr(df.cor)
 #install.packages("PerformanceAnalytics")
 library(PerformanceAnalytics)
 chart.Correlation(df.elem)
+
+#going through the correlations
+# Boxplot
+qplot(log10(As), log10(Cu), geom="boxplot", fill=COUN, data = df)
+qplot(log10(As), log10(Cu), geom="boxplot", facets = COUN ~ ., data = df) + coord_flip()
+#Ni vs Cu
+qplot(log10(Ni), log10(Cu), geom="boxplot", fill=COUN, data = df)
+qplot(log10(Ni), log10(Cu), geom="boxplot", facets = COUN ~ ., data = df) + coord_flip()
 # plot of Zn and CU
 plot(log10(df$Zn), log10(df$Cu), pch = 19)
 abline(lm(log10(df$Cu) ~ log10(df$Zn)), col = "red")
+
 
 #plot of Zn vs Cd without transformation
 plot(df$Zn, df$Cd, pch = 19)
