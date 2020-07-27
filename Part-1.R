@@ -15,7 +15,7 @@ df.elem <-data.frame("Ni"=df$Ni, "Cu"=df$Cu, "Cd"=df$Cd, "As"=df$As, "Zn"=df$Zn,
 plot(df.elem)
 
 #first method of showing correlation
-df.cor <- cor(df.elem)
+df.cor <- cor(log10(df.elem))
 
 #install.packages("GGally")
 library(GGally)
@@ -23,7 +23,7 @@ ggcorr(df.cor)
 #secont method of visualizing correlation
 #install.packages("PerformanceAnalytics")
 library(PerformanceAnalytics)
-chart.Correlation(df.elem)
+chart.Correlation(log10(df.elem))
 
 #going through the correlations
 # Boxplot
