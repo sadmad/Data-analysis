@@ -22,7 +22,7 @@ dm <- matrix(c(0,9,7,12,8,
 rownames(dm) <- colnames(dm) <- c("A","B","C","D","E")
 dm <- as.dist(dm)
 
-
+dm
 # Single Linkage
 cs <- hclust(dm, method="single")
 plot(cs)

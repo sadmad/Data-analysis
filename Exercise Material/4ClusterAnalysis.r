@@ -33,7 +33,9 @@ measure <- data.frame(
   "hips"=c(32, 37, 36, 39, 33, 38, 42, 40, 37, 39, 35, 37, 37, 34, 38, 37, 38,
            37, 40, 35)
 )
+measure
 measure$gender <- gl(2, 10)
+measure
 levels(measure$gender) <- c("male", "female")
 measure
 plot(measure[,1:3], col=measure$gender)
@@ -41,6 +43,7 @@ plot(measure[,1:3], col=measure$gender)
 
 # Distance matrix
 dm <- dist(measure[, c("chest", "waist", "hips")])
+dm
 round(dm, 2)
 
 
