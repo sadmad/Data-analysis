@@ -14,6 +14,14 @@ df.elem <-data.frame("Ni"=df$Ni, "Cu"=df$Cu, "Cd"=df$Cd, "As"=df$As, "Zn"=df$Zn,
 #make plot of the important element
 plot(df.elem)
 
+#### data Test#####
+shapiro.test(ohorizon$Cd)
+shapiro.test(log10(ohorizon$Cd))
+Ni
+ks.test(log10(ohorizon$Zn),"pnorm", mean(log10(ohorizon$Zn)), sd(log10(ohorizon$Zn)))
+
+### end ####
+
 #first method of showing correlation
 df.cor <- cor(log10(df.elem))
 
