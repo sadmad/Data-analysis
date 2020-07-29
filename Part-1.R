@@ -213,7 +213,7 @@ chart.Correlation(df.3.trans)
 df.partc <- na.omit(cbind(df.trans))
 aggregate(df.partc[,1:16], list(df.partc$COUN), mean)
 
-df.partc <- na.omit(cbind(df.el)
+df.partc <- na.omit(cbind(df.el))
 aggregate(df.partc[,1:16], list(df.partc$COUN), mean)
 
 #split the df to the important elements
