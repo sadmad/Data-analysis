@@ -13,7 +13,8 @@ head(df)
 df.el <- data.frame("Ni"=df$Ni, "Cu"=df$Cu, 'Co'=df$Co, 'Pd'=df$Pd,'Cr'=df$Cr, 'S'=df$S, 
                     "Bi"=df$Bi,"Pb"=df$Pb, "As"=df$As, "Cd"=df$Cd, "Zn"=df$Zn, "Hg"=df$Hg, 
                     "U"=df$U, "Th"= df$Th, "Ti"=df$Ti, 
-                    'pH'=df$pH,"XCOO"=df$XCOO, 'YCOO'=df$YCOO, 'ELEV'=df$ELEV, 'COUN'=df$COUN)
+                    'pH'=df$pH,"XCOO"=df$XCOO, 'YCOO'=df$YCOO, 'ELEV'=df$ELEV,
+                  'COUN'=df$COUN)
 #new hist
 par(mfrow=c(2,2))
 edaplotlog(df.el$Ni, H.freq=F,box=T,H.breaks=30,S.pch=3,S.cex=0.5,D.lwd=1.5,P.log=F,
@@ -85,7 +86,7 @@ qqnorm(Pd.boxcox)
 qqline(Pd.boxcox)
 
 #Cr
-linearmodel = lm(Cr ~ Ti, data = ohorizon)
+linearmodel = lm(Cr ~ S, data = ohorizon)
 bc <- boxcox(linearmodel, lambda = seq(-2,2))
 best.lam = bc$x[which(bc$y == max(bc$y))]
 Cr.boxcox <- (ohorizon$Cr)^-0.26
@@ -210,11 +211,36 @@ chart.Correlation(df.2.trans)
 chart.Correlation(df.3.trans)
 
 ## part c ##
-df.partc <- na.omit(cbind(df.trans))
-aggregate(df.partc[,1:16], list(df.partc$COUN), mean)
+df.trans.1 <- na.omit(data.frame(Ni.boxcox, Cu.boxcox, Co.boxcox, Pd.boxcox, Cr.boxcox, S.boxcox,
+                        "log10.Bi" = log10(df.el$Bi), Cd.boxcox, As.boxcox, Zn.boxcox, Pb.boxcox, Hg.boxcox,
+                        "log10.Ti" = log10(df.el$Ti), U.boxcox, Th.boxcox,
+                        'pH'=df$pH, 'XCOO'=df$XCOO, 'YCOO'=df$YCOO, 'ELEV'=df$ELEV,
+                        "COUN" = df.el$COUN, 'VEG_ZONE'=df$VEG_ZONE, 'LITO'=df$LITO, 'GROUNDVEG'=df$GROUNDVEG))
 
-df.partc <- na.omit(cbind(df.el))
-aggregate(df.partc[,1:16], list(df.partc$COUN), mean)
+df.el.1 <- na.omit(data.frame("Ni"=df$Ni, "Cu"=df$Cu, 'Co'=df$Co, 'Pd'=df$Pd,'Cr'=df$Cr, 'S'=df$S, 
+                    "Bi"=df$Bi,"Pb"=df$Pb, "As"=df$As, "Cd"=df$Cd, "Zn"=df$Zn, "Hg"=df$Hg, 
+                    "U"=df$U, "Th"= df$Th, "Ti"=df$Ti, 
+                    'pH'=df$pH,"XCOO"=df$XCOO, 'YCOO'=df$YCOO, 'ELEV'=df$ELEV,
+                    'COUN'=df$COUN, 'VEG_ZONE'=df$VEG_ZONE, 'LITO'=df$LITO, 'GROUNDVEG'=df$GROUNDVEG))
+
+aggregate(df.trans.1[,1:16], list(df.trans.1$COUN), mean)
+aggregate(df.el.1 [,1:16], list(df.el.1 $COUN), mean)
+
+aggregate(df.trans.1[,1:16], list(df.trans.1$VEG_ZONE), mean)
+aggregate(df.el.1 [,1:16], list(df.el.1 $VEG_ZONE), mean)
+
+aggregate(df.trans.1[,1:16], list(df.trans.1$GROUNDVEG), mean)
+aggregate(df.el.1 [,1:16], list(df.el.1 $GROUNDVEG), mean)
+
+#LITO Classification
+
+aggregate(df.trans.1[,1:16], list(df.trans.1$LITO), mean)
+aggregate(df.el.1 [,1:16], list(df.el.1 $LITO), mean)
+
+
+
+
+
 
 #split the df to the important elements
 df.h.metal <-data.frame("Ni"=df$Ni, "Cu"=df$Cu, "Cd"=df$Cd, "As"=df$As, "Zn"=df$Zn, "Pb"=df$Pb, "Hg"=df$Hg)
