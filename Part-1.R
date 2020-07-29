@@ -13,7 +13,7 @@ head(df)
 df.el <- data.frame("Ni"=df$Ni, "Cu"=df$Cu, 'Co'=df$Co, 'Pd'=df$Pd,'Cr'=df$Cr, 'S'=df$S, 
                     "Bi"=df$Bi,"Pb"=df$Pb, "As"=df$As, "Cd"=df$Cd, "Zn"=df$Zn, "Hg"=df$Hg, 
                     "U"=df$U, "Th"= df$Th, "Ti"=df$Ti, 
-                    'pH'=df$pH,"XCOO"=df$XCOO, 'YCOO'=df$YCOO, 'ELEV'=df$ELEV)
+                    'pH'=df$pH,"XCOO"=df$XCOO, 'YCOO'=df$YCOO, 'ELEV'=df$ELEV, 'COUN'=df$COUN)
 #new hist
 par(mfrow=c(2,2))
 edaplotlog(df.el$Ni, H.freq=F,box=T,H.breaks=30,S.pch=3,S.cex=0.5,D.lwd=1.5,P.log=F,
@@ -29,7 +29,7 @@ lapply(df.el[-20], function(x) shapiro.test(x))
 
 ### transformation ###
 ############(Ti,U,Bi,Co,Cr,Th,S,Ni,Cu,Cd,As,Zn,Pb,Hg,Pd,Pd.log,pH,XCOO,YCOO,ELEV)
-install.packages("MASS")
+#install.packages("MASS")
 library(MASS)
 #Ni
 
@@ -182,9 +182,10 @@ shapiro.test((Hg.boxcox))
 qqnorm(Hg.boxcox)
 qqline(Hg.boxcox)
 
-df.trans<- data.frame("log10.Ti" = log10(df.el$Ti),U.boxcox,"log10.Bi" = log10(df.el$Bi),Co.boxcox,Cr.boxcox,Th.boxcox,S.boxcox,
-                        Ni.boxcox,Cu.boxcox,Cd.boxcox,As.boxcox,Zn.boxcox,Pb.boxcox,
-                        Hg.boxcox,Pd.boxcox,pH,XCOO,YCOO,ELEV)
+df.trans<- data.frame(Ni.boxcox, Cu.boxcox, Co.boxcox, Pd.boxcox, Cr.boxcox, S.boxcox,
+                      "log10.Bi" = log10(df.el$Bi), Cd.boxcox, As.boxcox, Zn.boxcox, Pb.boxcox, Hg.boxcox,
+                      "log10.Ti" = log10(df.el$Ti), U.boxcox, Th.boxcox,
+                      'pH'=df$pH, 'XCOO'=df$XCOO, 'YCOO'=df$YCOO, 'ELEV'=df$ELEV, "COUN" = df.el$COUN)
 #Plot Transformed
 par(mfrow=c(2,2))
 edaplotlog(df.trans$Ni.boxcox, H.freq=F,box=T,H.breaks=30,S.pch=3,S.cex=0.5,D.lwd=1.5,P.log=F,
@@ -195,11 +196,25 @@ edaplotlog(df.trans$U, H.freq=F,box=T,H.breaks=30,S.pch=3,S.cex=0.5,D.lwd=1.5,P.
            P.main="",P.xlab="U transformed",P.ylab="Density",B.pch=3,B.cex=0.5,B.log=F)
 edaplotlog(df.trans$log10.Ti, H.freq=F,box=T,H.breaks=30,S.pch=3,S.cex=0.5,D.lwd=1.5,P.log=F,
            P.main="",P.xlab="Ti transformed",P.ylab="Density",B.pch=3,B.cex=0.5,B.log=F)
-df.trans
+
 lapply(df.trans[-20], function(x) shapiro.test(x))
+#correlation of our splitted dataframe
+#chart.Correlation(df.trans[,1:6])
+#chart.Correlation(df.trans[,7:12])
+#chart.Correlation(df.trans[,13:15])
+df.1.trans <- cbind(df.trans[,1:6],df.trans[,17:18])
+df.2.trans <- cbind(df.trans[,7:12],df.trans[,17:18])
+df.3.trans <- cbind(df.trans[,13:15],df.trans[,17:18])
+chart.Correlation(df.1.trans)
+chart.Correlation(df.2.trans)
+chart.Correlation(df.3.trans)
 
+## part c ##
+df.partc <- na.omit(cbind(df.trans))
+aggregate(df.partc[,1:16], list(df.partc$COUN), mean)
 
-
+df.partc <- na.omit(cbind(df.el)
+aggregate(df.partc[,1:16], list(df.partc$COUN), mean)
 
 #split the df to the important elements
 df.h.metal <-data.frame("Ni"=df$Ni, "Cu"=df$Cu, "Cd"=df$Cd, "As"=df$As, "Zn"=df$Zn, "Pb"=df$Pb, "Hg"=df$Hg)
@@ -268,6 +283,7 @@ pairs(df[10:14])
 
 #pie chart of ni in all three countries
 #install.packages('plotrix')
+par(mfrow=c(1,1))
 library(plotrix)
 ni.rus <- subset(df$Ni, df$COUN == 'RUS' )
 ni.nor <- subset(df$Ni, df$COUN == 'NOR' )
