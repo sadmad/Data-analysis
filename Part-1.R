@@ -8,22 +8,227 @@ df <- ohorizon
 summary(df)
 head(df)
 
-##### (a) ##### 
+ ##### (a) ##### 
+
+df.el <- data.frame("Ni"=df$Ni, "Cu"=df$Cu, 'Co'=df$Co, 'Pd'=df$Pd,'Cr'=df$Cr, 'S'=df$S, 
+                    "Bi"=df$Bi,"Pb"=df$Pb, "As"=df$As, "Cd"=df$Cd, "Zn"=df$Zn, "Hg"=df$Hg, 
+                    "U"=df$U, "Th"= df$Th, "Ti"=df$Ti, 
+                    'pH'=df$pH,"XCOO"=df$XCOO, 'YCOO'=df$YCOO, 'ELEV'=df$ELEV)
+#new hist
+par(mfrow=c(2,2))
+edaplotlog(df.el$Ni, H.freq=F,box=T,H.breaks=30,S.pch=3,S.cex=0.5,D.lwd=1.5,P.log=F,
+           P.main="",P.xlab="Ni [mg/kg]",P.ylab="Density",B.pch=3,B.cex=0.5,B.log=F)
+edaplotlog(df.el$Bi, H.freq=F,box=T,H.breaks=30,S.pch=3,S.cex=0.5,D.lwd=1.5,P.log=F,
+           P.main="",P.xlab="Bi [mg/kg]",P.ylab="Density",B.pch=3,B.cex=0.5,B.log=F)
+edaplotlog(df.el$U, H.freq=F,box=T,H.breaks=30,S.pch=3,S.cex=0.5,D.lwd=1.5,P.log=F,
+           P.main="",P.xlab="U [mg/kg]",P.ylab="Density",B.pch=3,B.cex=0.5,B.log=F)
+edaplotlog(df.el$Ti, H.freq=F,box=T,H.breaks=30,S.pch=3,S.cex=0.5,D.lwd=1.5,P.log=F,
+           P.main="",P.xlab="Ti [mg/kg]",P.ylab="Density",B.pch=3,B.cex=0.5,B.log=F)
+
+lapply(df.el[-20], function(x) shapiro.test(x))
+
+### transformation ###
+############(Ti,U,Bi,Co,Cr,Th,S,Ni,Cu,Cd,As,Zn,Pb,Hg,Pd,Pd.log,pH,XCOO,YCOO,ELEV)
+install.packages("MASS")
+library(MASS)
+#Ni
+
+linearmodel = lm(Ni ~ Cu, data = ohorizon)
+#plot(linearmodel)
+
+bc <- boxcox(linearmodel, lambda = seq(-2,2))
+best.lam = bc$x[which(bc$y == max(bc$y))]
+fullmodel.inv = lm((Ni)^-.5 ~ Cu, data = ohorizon)
+#plot(fullmodel.inv)
+
+Ni.boxcox <- (ohorizon$Ni)^-0.379
+hist(Ni.boxcox)
+shapiro.test((Ni.boxcox))
+qqnorm(Ni.boxcox)
+qqline(Ni.boxcox)
+
+
+#Cu
+
+linearmodel = lm(Cu ~ Ni, data = ohorizon)
+bc <- boxcox(linearmodel, lambda = seq(-2,2))
+best.lam = bc$x[which(bc$y == max(bc$y))]
+
+Cu.boxcox <- (ohorizon$Cu)^-0.7
+hist(Cu.boxcox)
+shapiro.test((Cu.boxcox))
+qqnorm(Cu.boxcox)
+qqline(Cu.boxcox)
+
+#Co
+
+linearmodel = lm(Co ~ Pd, data = ohorizon)
+bc <- boxcox(linearmodel, lambda = seq(-2,2))
+best.lam = bc$x[which(bc$y == max(bc$y))]
+Co.boxcox <- (ohorizon$Co)^-0.28
+hist(Co.boxcox)
+shapiro.test((Co.boxcox))
+qqnorm(Co.boxcox)
+qqline(Co.boxcox)
+
+
+#Pd
+
+linearmodel = lm(Pd ~ Ni, data = ohorizon)
+bc <- boxcox(linearmodel, lambda = seq(-2,2))
+best.lam = bc$x[which(bc$y == max(bc$y))]
+fullmodel.inv = lm((Pd)^-.5 ~ Ni, data = ohorizon)
+Pd.boxcox <- (ohorizon$Pd)^-0.18
+hist(Pd.boxcox)
+shapiro.test((Pd.boxcox))
+qqnorm(Pd.boxcox)
+qqline(Pd.boxcox)
+
+#Cr
+linearmodel = lm(Cr ~ Ti, data = ohorizon)
+bc <- boxcox(linearmodel, lambda = seq(-2,2))
+best.lam = bc$x[which(bc$y == max(bc$y))]
+Cr.boxcox <- (ohorizon$Cr)^-0.26
+hist(Cr.boxcox)
+shapiro.test((Cr.boxcox))
+qqnorm(Cr.boxcox)
+qqline(Cr.boxcox)
+
+#Th
+
+linearmodel = lm(Th ~ U, data = ohorizon)
+bc <- boxcox(linearmodel, lambda = seq(-2,2))
+best.lam = bc$x[which(bc$y == max(bc$y))]
+Th.boxcox <- (ohorizon$Th)^-0.30
+hist(Th.boxcox)
+shapiro.test((Th.boxcox))
+qqnorm(Th.boxcox)
+qqline(Th.boxcox)
+
+#U
+
+linearmodel = lm(U ~ Th, data = ohorizon)
+bc <- boxcox(linearmodel, lambda = seq(-2,2))
+best.lam = bc$x[which(bc$y == max(bc$y))]
+U.boxcox <- (ohorizon$U)^-0.29
+hist(U.boxcox)
+shapiro.test((U.boxcox))
+qqnorm(U.boxcox)
+qqline(U.boxcox)
+
+#As
+
+linearmodel = lm(As ~ Pb, data = ohorizon)
+bc <- boxcox(linearmodel, lambda = seq(-2,2))
+best.lam = bc$x[which(bc$y == max(bc$y))]
+As.boxcox <- (ohorizon$As)^-0.53
+hist(As.boxcox)
+shapiro.test((As.boxcox))
+qqnorm(As.boxcox)
+qqline(As.boxcox)
+
+#Pb
+
+linearmodel = lm(Pb ~ As, data = ohorizon)
+bc <- boxcox(linearmodel, lambda = seq(-2,2))
+best.lam = bc$x[which(bc$y == max(bc$y))]
+Pb.boxcox <- (ohorizon$Pb)^-0.42
+hist(Pb.boxcox)
+shapiro.test((Pb.boxcox))
+qqnorm(Pb.boxcox)
+qqline(Pb.boxcox)
+
+#Cd
+
+linearmodel = lm(Cd ~ As, data = ohorizon)
+bc <- boxcox(linearmodel, lambda = seq(-2,2))
+best.lam = bc$x[which(bc$y == max(bc$y))]
+Cd.boxcox <- (ohorizon$Cd)^-0.095
+hist(Cd.boxcox)
+shapiro.test((Cd.boxcox))
+qqnorm(Cd.boxcox)
+qqline(Cd.boxcox)
+
+#Zn
+
+linearmodel = lm(Zn ~ As, data = ohorizon)
+bc <- boxcox(linearmodel, lambda = seq(-2,2))
+best.lam = bc$x[which(bc$y == max(bc$y))]
+Zn.boxcox <- (ohorizon$Zn)^0.19
+hist(Zn.boxcox)
+shapiro.test((Zn.boxcox))
+qqnorm(Zn.boxcox)
+qqline(Zn.boxcox)
+
+#S
+
+linearmodel = lm(S ~ Ni, data = ohorizon)
+bc <- boxcox(linearmodel, lambda = seq(-2,2))
+best.lam = bc$x[which(bc$y == max(bc$y))]
+S.boxcox <- (ohorizon$S)^0.666
+hist(S.boxcox)
+shapiro.test((S.boxcox))
+qqnorm(S.boxcox)
+qqline(S.boxcox)
+
+#Hg
+
+linearmodel = lm(Hg ~ As, data = ohorizon)
+bc <- boxcox(linearmodel, lambda = seq(-2,2))
+best.lam = bc$x[which(bc$y == max(bc$y))]
+Hg.boxcox <- (ohorizon$Hg)^-0.059
+hist(Hg.boxcox)
+shapiro.test((Hg.boxcox))
+qqnorm(Hg.boxcox)
+qqline(Hg.boxcox)
+
+df.trans<- data.frame("log10.Ti" = log10(df.el$Ti),U.boxcox,"log10.Bi" = log10(df.el$Bi),Co.boxcox,Cr.boxcox,Th.boxcox,S.boxcox,
+                        Ni.boxcox,Cu.boxcox,Cd.boxcox,As.boxcox,Zn.boxcox,Pb.boxcox,
+                        Hg.boxcox,Pd.boxcox,pH,XCOO,YCOO,ELEV)
+#Plot Transformed
+par(mfrow=c(2,2))
+edaplotlog(df.trans$Ni.boxcox, H.freq=F,box=T,H.breaks=30,S.pch=3,S.cex=0.5,D.lwd=1.5,P.log=F,
+           P.main="",P.xlab="Ni transformed",P.ylab="Density",B.pch=3,B.cex=0.5,B.log=F)
+edaplotlog(df.trans$log10.Bi, H.freq=F,box=T,H.breaks=30,S.pch=3,S.cex=0.5,D.lwd=1.5,P.log=F,
+           P.main="",P.xlab="Bi transformed",P.ylab="Density",B.pch=3,B.cex=0.5,B.log=F)
+edaplotlog(df.trans$U, H.freq=F,box=T,H.breaks=30,S.pch=3,S.cex=0.5,D.lwd=1.5,P.log=F,
+           P.main="",P.xlab="U transformed",P.ylab="Density",B.pch=3,B.cex=0.5,B.log=F)
+edaplotlog(df.trans$log10.Ti, H.freq=F,box=T,H.breaks=30,S.pch=3,S.cex=0.5,D.lwd=1.5,P.log=F,
+           P.main="",P.xlab="Ti transformed",P.ylab="Density",B.pch=3,B.cex=0.5,B.log=F)
+df.trans
+lapply(df.trans[-20], function(x) shapiro.test(x))
+
+
+
+
 #split the df to the important elements
-df.elem <-data.frame("Ni"=df$Ni, "Cu"=df$Cu, "Cd"=df$Cd, "As"=df$As, "Zn"=df$Zn, "Pb"=df$Pb, "Hg"=df$Hg)
+df.h.metal <-data.frame("Ni"=df$Ni, "Cu"=df$Cu, "Cd"=df$Cd, "As"=df$As, "Zn"=df$Zn, "Pb"=df$Pb, "Hg"=df$Hg)
+
+par(mfrow=c(2,2))
+plot(df$U)
+hist(df$U)
+hist(log10(df$U))
+hist(df$Th)
+hist(log10(df$Th))
+Th<-log10(df$Th)
+U<-log10(df$U)
+df.radioactive <- data.frame("Th"=Th, "U"=U)
+df.radioactive.veg.zone <- data.frame("VEG_ZONE"=df$VEG_ZONE, "Th"=Th, "U"=U)
+df.radioactive.zone <- data.frame("COUN"=df$COUN, "GROUNDVEG"=df$GROUNDVEG, "VEG_ZONE"=df$VEG_ZONE, "Th"=Th, "U"=U)
+df.radioactive
 #make plot of the important element
-plot(df.elem)
+plot(df.h.metal)
 
 #### data Test#####
 shapiro.test(ohorizon$Cd)
 shapiro.test(log10(ohorizon$Cd))
-Ni
-ks.test(log10(ohorizon$Zn),"pnorm", mean(log10(ohorizon$Zn)), sd(log10(ohorizon$Zn)))
 
+ks.test(log10(ohorizon$Zn),"pnorm", mean(log10(ohorizon$Zn)), sd(log10(ohorizon$Zn)))
+ks.test(log10(ohorizon$Zn),log10(ohorizon$Ca))
 ### end ####
 
 #first method of showing correlation
-df.cor <- cor(log10(df.elem))
+df.cor <- cor(log10(df.h.metal))
 
 #install.packages("GGally")
 library(GGally)
@@ -31,7 +236,10 @@ ggcorr(df.cor)
 #secont method of visualizing correlation
 #install.packages("PerformanceAnalytics")
 library(PerformanceAnalytics)
-chart.Correlation(log10(df.elem))
+
+chart.Correlation(log10(df.h.metal))
+chart.Correlation(df.radioactive)
+
 
 #going through the correlations
 # Boxplot
@@ -86,7 +294,9 @@ library(ggplot2)
 df.coun.el<-data.frame("COUN" = df$COUN, "Ni"= df$Ni, "Cu"= df$Cu, "Cd"= df$Cd,
                        "As"= df$As, "Zn"= df$Zn, "Pb"= df$Pb, "Hg"= df$Hg)
 ggpairs(df.coun.el)
-abline(df.coun.el, col = "red")
+ggpairs(df.radioactive.zone)
+ggpairs(df.radioactive.veg.zone)
+
 
 ####TEST-scotter3d####
 #install.packages("scatterplot3d")
@@ -117,11 +327,13 @@ scatterplot3d(df[1:4], angle = 60,main="3D Scatter Plot",
 boxplot(df$Ni ~ df$COUN)
 boxplot(log10(df$Ni) ~ df$COUN)
 plot(log10(df$Ni) ~ df$VEG_ZONE)
+plot(U ~ df$VEG_ZONE)
+plot(Th ~ df$VEG_ZONE)
 #install.packages('lattice')
 library(lattice)
 xyplot(log10(df$Ni) ~ log10(df$Zn) | df$COUN)
 xyplot(log10(df$Ni) ~ log10(df$Cu) | df$VEG_ZONE)
-
+xyplot(U ~ Th |df$VEG_ZONE)
 ########average concentration#########
 # a) countries
 #install.packages("PerformanceAnalytics")
