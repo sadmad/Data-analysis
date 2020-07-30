@@ -4,6 +4,23 @@ library(PerformanceAnalytics)
 data(ohorizon)
 df <- ohorizon
 
+#### abstract ####
+#Surface Maps Constructed With Kriging
+
+el=ohorizon[,"As"]
+X=ohorizon[,"XCOO"]
+Y=ohorizon[,"YCOO"]
+plot(X,Y,frame.plot=FALSE,xaxt="n",yaxt="n",xlab="",ylab="",type="n")
+plotbg(map.col=c("gray","#aa3311","green","blue"),add.plot=T)
+SymbLegend(X,Y,el,type="percentile",qutiles<-c(0,0.05,0.25,0.75,0.95,1),symbtype="EDA",symbmagn=0.8,
+           leg.position="topright",leg.title="As [mg/kg]",leg.title.cex=0.8,leg.round=2,leg.wid=4,leg.just="rig")
+text(min(X)+diff(range(X))*4/7,max(Y),paste(qutiles*100,collapse=","),cex=0.8)
+text(min(X)+diff(range(X))*4/7,max(Y)-diff(range(Y))/25,"Percentiles",cex=0.8)
+scalebar(761309,7373050,861309,7363050,shifttext=-0.5,shiftkm=37e3,sizetext=0.8)
+Northarrow(362602,7818750,362602,7878750,362602,7838750,Alength=0.15,Aangle=15,Alwd=1.3,Tcex=1.6)
+
+
+
 #add the data to variable
 summary(df)
 head(df)
