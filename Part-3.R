@@ -4,59 +4,86 @@
 library(ggplot2)
 #install.packages('ggthemes')
 library(ggthemes)
+#install.packages("dplyr")
 library(dplyr)
 #install.packages("corrgram")
 library(corrgram)
 #install.packages("corrplot")
 library(corrplot)
+#install.packages("tidyverse")
+library(tidyverse)
+#install.packages("corrr")
+library(corrr)
+#install.packages("car")
+library(car)
+#install.packages("rgl")
+library(rgl)
+#install.packages("RColorBrewer")
+library(RColorBrewer)
+
+
+
+
+df <- df.trans.1
 #check all the numeric cols
 num.df.cols <- sapply(df, is.numeric)
 #check the corolation of all numeric data
 num.df <- cor(df[,num.df.cols])
-library(tidyverse)
 df %>% select_if(is.numeric)->df.num
-#install.packages("corrr")
-head(df.num)
-library(corrr)
-library(ggplot2)
-x <- df.num %>% correlate() %>% focus(Bi)
+x <- df.num %>% correlate() %>% focus(log10.Bi)
 x %>% 
-  mutate(rowname = factor(rowname, levels = rowname[order(Bi)])) %>%  # Order by correlation strength
-  ggplot(aes(x = rowname, y = Bi)) +
+  mutate(rowname = factor(rowname, levels = rowname[order(log10.Bi)])) %>%  # Order by correlation strength
+  ggplot(aes(x = rowname, y = log10.Bi)) +
   geom_bar(stat = "identity") +
   ylab("Correlation with Bi") +
   xlab("Numeric Variables")
 
 
+#3D/4D Scatterplot
 
-###############
-hist(df$Ni)
-hist(log10(ohorizon$Ni))
-head(df)
-qplot(Cu,data=df,geom='histogram',binwidth=0.1,alpha=0.8)
-hist(ohorizon$Cu)
-hist(log10(ohorizon$Cu))
-shapiro.test(log10(ohorizon$Cu))
-shapiro.test(ohorizon$Cu)
-summary(ohorizon$Ni)
-sd(ohorizon$Ni)
-boxplot(log10(ohorizon$Ni))
-plot(density(ohorizon$Ni))
-plot(ecdf(ohorizon$Ni))
-plot(ohorizon$Ni,ohorizon$Cu)
-plot(log10(ohorizon$Ni),log10(ohorizon$Cu))
-pairs(ohorizon[36:40])
+#As, Bi, Pb, Cd
 
-#install.packages("PerformanceAnalytics")
-#library(PerformanceAnalytics)
-chart.Correlation(ohorizon[25:40])
-split.ohorizon <-data.frame("Ni"=ohorizon$Ni, "Cu"=ohorizon$Cu, "Cd"=ohorizon$Cd, "As"=ohorizon$As, "Zn"=ohorizon$Zn, "Pb"=ohorizon$Pb, "Hg"=ohorizon$Hg)
-chart.Correlation(split.ohorizon)
-split.ohorizon1 <-data.frame("COUN"= ohorizon$COUN,"VEG_ZONE"=ohorizon$VEG_ZONE, "LITO"=ohorizon$LITO,"GROUNDVEG"=ohorizon$GROUNDVEG, "Ni"=ohorizon$Ni, "Cu"=ohorizon$Cu, "Cd"=ohorizon$Cd, "As"=ohorizon$As, "Zn"=ohorizon$Zn, "Pb"=ohorizon$Pb, "Hg"=ohorizon$Hg)
-mean(ohorizon$Ni)
-mean(split.ohorizon1$Ni)
+cols = brewer.pal(8, "RdYlGn")
+pal = colorRampPalette(cols)
+df.trans$order = findInterval(df.trans$Cd.boxcox, sort(df.trans$Cd.boxcox))
 
-aggregate(split.ohorizon1[, 5:11], list(split.ohorizon1$COUN), mean)
-aggregate(split.ohorizon1[, 5:11], list(split.ohorizon1$VEG_ZONE), mean)
-aggregate(split.ohorizon1[, 5:11], list(split.ohorizon1$GROUNDVEG), mean)
-###############
+scatter3d(As.boxcox, df.trans$log10.Bi, Pb.boxcox, grid = FALSE, grid.col = "black", fit = "linear", surface = T, fill = TRUE,
+          surface.col = "white", surface.alpha = 0.2,
+          point.col = pal(nrow(df.trans))[df.trans$order], bg.col = "black",
+          sphere.size = 1.5, axis.scales = TRUE, axis.ticks = TRUE, axis.col = "gray", fov = 60)
+
+#Ni,Cu,Co,Pd
+
+cols = brewer.pal(8, "RdYlGn")
+pal = colorRampPalette(cols)
+df.trans$order = findInterval(df.trans$Pd.boxcox, sort(df.trans$Pd.boxcox))
+
+scatter3d(Ni.boxcox,Cu.boxcox,Co.boxcox, grid = FALSE, grid.col = "black", fit = "linear", surface = T, fill = TRUE,
+          surface.col = "white", surface.alpha = 0.2,
+          point.col = pal(nrow(df.trans))[df.trans$order], bg.col = "black",
+          sphere.size = 1.5, axis.scales = TRUE, axis.ticks = TRUE, axis.col = "gray", fov = 60)
+
+#U, Th, Ti, YCOO
+
+cols = brewer.pal(8, "RdYlGn")
+pal = colorRampPalette(cols)
+df.trans$order = findInterval(df.trans$Th.boxcox, sort(df.trans$Th.boxcox))
+
+scatter3d(U.boxcox, df.trans$log10.Ti,df.trans$YCOO, grid = FALSE, grid.col = "black", fit = "linear", surface = T, fill = TRUE,
+          surface.col = "white", surface.alpha = 0.2,
+          point.col = pal(nrow(df.trans))[df.trans$order], bg.col = "black",
+          sphere.size = 1.5, axis.scales = TRUE, axis.ticks = TRUE, axis.col = "gray", fov = 60)
+
+#As, Bi, Pb, Cd
+
+cols = brewer.pal(8, "RdYlGn")
+pal = colorRampPalette(cols)
+df.trans$order = findInterval(df.trans$Cd.boxcox, sort(df.trans$Cd.boxcox))
+
+scatter3d(As.boxcox, df.trans$log10.Bi, Pb.boxcox, grid = FALSE, grid.col = "black", fit = "linear", surface = T, fill = TRUE,
+          surface.col = "black", surface.alpha = 0.1,
+          point.col = pal(nrow(df.trans))[df.trans$order], bg.col = "white",
+          sphere.size = 1.5, axis.scales = TRUE, axis.ticks = TRUE, axis.col = c("black","black","black"), fov = 60)
+
+#rgl.snapshot(filename = "AsBiPbCd.png")
+
